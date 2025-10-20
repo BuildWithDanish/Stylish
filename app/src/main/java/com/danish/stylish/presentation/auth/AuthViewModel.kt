@@ -14,8 +14,7 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val loginUseCase: LoginUseCase,
-    private val signUseCase: SignUpUseCase,
-    private val googleSignInUseCase: GoogleSignInUseCase
+    private val signUseCase: SignUpUseCase
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow<Result<String>>(Result.Idle)
