@@ -6,8 +6,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 
 class GoogleSignInUseCase(private val repository: AuthRepository) {
 
-    suspend operator fun invoke(account: GoogleSignInAccount): Result<String> {
-        return repository.signInWithGoogle(account)
-    }
+//    suspend operator fun invoke(account: GoogleSignInAccount): Result<String> {
+//        return repository.signInWithGoogle(account)
+//    }
 
 }

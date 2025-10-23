@@ -41,6 +41,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.danish.stylish.R
 import com.danish.stylish.domain.utils.Result
@@ -50,7 +52,7 @@ import com.danish.stylish.navigation.Routes
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -67,10 +69,12 @@ fun LoginScreen(
     LaunchedEffect(authState) {
         when (val currentState = authState) {
             is Result.Success -> {
-                // Navigate to main screen or dashboard on successful login
-//                navController.navigate(Routes.OnBoardingScreen1) {
-//                    popUpTo(Routes.LoginScreen) { inclusive = true }
-//                }
+                /*
+                Navigate to main screen or dashboard on successful login
+                navController.navigate(Routes.OnBoardingScreen1) {
+                popUpTo(Routes.LoginScreen) { inclusive = true }
+                }
+                */
             }
 
             is Result.Failure -> {

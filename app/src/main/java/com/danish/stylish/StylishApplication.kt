@@ -1,7 +1,9 @@
 package com.danish.stylish
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-object StylishApplication: Application() {
+@HiltAndroidApp
+class StylishApplication: Application() {
 
 }

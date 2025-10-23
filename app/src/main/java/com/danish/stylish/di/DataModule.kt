@@ -24,7 +24,7 @@ object DataModule {
     fun provideHttpClient(): HttpClient {
         return HttpClient(CIO) {
             defaultRequest {
-                url("https://dummyjson.com/products")
+                url("https://dummyjson.com")
             }
             install(ContentNegotiation) {
                 json(Json {
@@ -47,3 +47,4 @@ object DataModule {
         return AuthRepositoryImpl(firebaseAuth)
     }
 }
+

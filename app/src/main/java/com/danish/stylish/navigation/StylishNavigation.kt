@@ -21,16 +21,12 @@ import com.google.firebase.auth.FirebaseAuth
 fun StylishNavigation() {
 
     val navController = rememberNavController()
-    val authRepository = AuthRepositoryImpl(FirebaseAuth.getInstance())
-    val loginUseCase = LoginUseCase(authRepository)
-    val signUpUseCase = SignUpUseCase(authRepository)
-    val authViewModel = remember { AuthViewModel(loginUseCase, signUpUseCase) }
 
     NavHost(navController = navController, startDestination = Routes.GetStartedScreen) {
 
         composable<Routes.OnBoardingScreen1> { SwipOnBoarding(navController) }
-        composable<Routes.LoginScreen> { LoginScreen(navController, authViewModel) }
-        composable<Routes.SignUpScreen> { SignUpScreen(navController, authViewModel) }
+        composable<Routes.LoginScreen> { LoginScreen(navController) }
+        composable<Routes.SignUpScreen> { SignUpScreen(navController) }
         composable<Routes.ForgetScreen> { ForegtScreen(navController) }
         composable<Routes.GetStartedScreen> { GetStartedScreen(navController) }
         composable<Routes.SplashScreen> { SplashScreen(navController) }
