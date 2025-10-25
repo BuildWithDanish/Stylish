@@ -71,6 +71,8 @@ import coil3.request.crossfade
 import com.danish.stylish.R
 import com.danish.stylish.domain.model.Product
 import com.danish.stylish.domain.utils.Result
+import com.danish.stylish.presentation.component.BottomNavItem
+import com.danish.stylish.presentation.component.BottomNavigationBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,46 +85,61 @@ fun ProductListScreen(
     val productsState by productViewModel.productState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
-    Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                // Center logo
-                Box(
-                    modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_splash),
-                        contentDescription = "Brand Logo",
-                        modifier = Modifier.height(32.dp)
-                    )
-                }
-            }, navigationIcon = {
-                // Left menu icon
-                IconButton(onClick = { /* Handle menu */ }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_menu),
-                        contentDescription = "Menu",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-            }, actions = {
-                // Right profile avatar
-                IconButton(onClick = { /* Handle profile */ }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.profile_avatar),
-                        contentDescription = "Profile",
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(CircleShape)
-                            .border(2.dp, Color(0xFFE0E0E0), CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            }, colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    // Center logo
+                    Box(
+                        modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_splash),
+                            contentDescription = "Brand Logo",
+                            modifier = Modifier.height(32.dp)
+                        )
+                    }
+                }, navigationIcon = {
+                    // Left menu icon
+                    IconButton(onClick = { /* Handle menu */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_menu),
+                            contentDescription = "Menu",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }, actions = {
+                    // Right profile avatar
+                    IconButton(onClick = { /* Handle profile */ }) {
+                        Image(
+                            painter = painterResource(id = R.drawable.profile_avatar),
+                            contentDescription = "Profile",
+                            modifier = Modifier
+                                .size(40.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, Color(0xFFE0E0E0), CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                }, colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                )
             )
-        )
-    }) { paddingValues ->
+        },
+        bottomBar = {
+            BottomNavigationBar(
+                currentRoute = "home",
+                onItemClick = { item ->
+                    when (item) {
+                        is BottomNavItem.WishList -> {}
+                        is BottomNavItem.Cart -> {}
+                        is BottomNavItem.Home -> {}
+                        is BottomNavItem.Search -> {}
+                        is BottomNavItem.Setting -> {}
+                    }
+                })
+        }
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
