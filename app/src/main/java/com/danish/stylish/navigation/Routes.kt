@@ -28,4 +28,7 @@ sealed class Routes {
 
     @Serializable
     object SplashScreen: Routes()
+
+    @Serializable
+    object ProductListScreen: Routes()
 }

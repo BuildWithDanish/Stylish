@@ -14,6 +14,7 @@ import com.danish.stylish.presentation.auth.LoginScreen
 import com.danish.stylish.presentation.auth.SignUpScreen
 import com.danish.stylish.presentation.onboardingscreen.GetStartedScreen
 import com.danish.stylish.presentation.onboardingscreen.SplashScreen
+import com.danish.stylish.presentation.products.ProductListScreen
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 
@@ -30,6 +31,7 @@ fun StylishNavigation() {
         composable<Routes.ForgetScreen> { ForegtScreen(navController) }
         composable<Routes.GetStartedScreen> { GetStartedScreen(navController) }
         composable<Routes.SplashScreen> { SplashScreen(navController) }
+        composable <Routes.ProductListScreen>{ ProductListScreen(navController) }
 
     }
 }

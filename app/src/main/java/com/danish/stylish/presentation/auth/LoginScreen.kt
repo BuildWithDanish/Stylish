@@ -69,12 +69,10 @@ fun LoginScreen(
     LaunchedEffect(authState) {
         when (val currentState = authState) {
             is Result.Success -> {
-                /*
-                Navigate to main screen or dashboard on successful login
-                navController.navigate(Routes.OnBoardingScreen1) {
+//                Navigate to main screen or dashboard on successful login
+                navController.navigate(Routes.ProductListScreen) {
                 popUpTo(Routes.LoginScreen) { inclusive = true }
                 }
-                */
             }
 
             is Result.Failure -> {

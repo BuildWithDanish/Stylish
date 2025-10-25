@@ -5,12 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.danish.stylish.domain.usecase.LoginUseCase
 import com.danish.stylish.domain.usecase.SignUpUseCase
 import com.danish.stylish.domain.utils.Result
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val signUseCase: SignUpUseCase

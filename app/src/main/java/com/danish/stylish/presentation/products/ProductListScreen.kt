@@ -8,6 +8,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,9 +37,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,15 +63,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import coil3.compose.SubcomposeAsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.danish.stylish.R
+import com.danish.stylish.domain.model.Product
+import com.danish.stylish.domain.utils.Result
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview(showSystemUi = true)
-fun ProductListScreen() {
+//@Preview(showSystemUi = true)
+fun ProductListScreen(
+    navController: NavHostController,
+    productViewModel: ProductViewModel = hiltViewModel(),
+) {
 
+    val productsState by productViewModel.productState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
     Scaffold(topBar = {
@@ -112,7 +127,7 @@ fun ProductListScreen() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Color(0xFFE7E7E7))
+                .background(Color(0xFFf9f9f9))
         ) {
             // Search Bar
             OutlinedTextField(
@@ -144,7 +159,7 @@ fun ProductListScreen() {
                     }
                 },
                 shape = RoundedCornerShape(8.dp),
-                colors = androidx.compose.material3.TextFieldDefaults.colors(
+                colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.White,
                     unfocusedContainerColor = Color.White,
                     disabledContainerColor = Color.White,
@@ -163,22 +178,23 @@ fun ProductListScreen() {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                /* when (val state = productsState) {
-                     is Result.Success -> {
-                         Text(
-                             text = "${state.data.size} Items",
-                             fontSize = 16.sp,
-                             fontWeight = FontWeight.Medium
-                         )
-                     }
-                     else -> {
-                         Text(
-                             text = "Loading...",
-                             fontSize = 16.sp,
-                             fontWeight = FontWeight.Medium
-                         )
-                     }
-                 }*/
+                when (val state = productsState) {
+                    is Result.Success -> {
+                        Text(
+                            text = "${state.data.size} Items",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+
+                    else -> {
+                        Text(
+                            text = "Loading...",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
 
                 Row {
                     TextButton(
@@ -206,68 +222,63 @@ fun ProductListScreen() {
             }
 
             // Product Grid
-            /*
-                        when (val state = productsState) {
-                            is Result.Loading -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    CircularProgressIndicator()
-                                }
-                            }
-                            is Result.Success -> {
-                                LazyVerticalGrid(
-                                    columns = GridCells.Fixed(2),
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentPadding = PaddingValues(16.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                                ) {
-                                    items(state.data) { product ->
-                                        ProductCard(
-                                            product = product,
-                                            onClick = {
-                                                navController.navigate(Routes.ProductDetailScreen(product.id))
-                                            }
-                                        )
-                                    }
-                                }
-                            }
-                            is Result.Failure -> {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        Text(
-                                            text = "Error: ${state.message}",
-                                            color = Color.Red
-                                        )
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        TextButton(
-                                            onClick = { productViewModel.retryLoading() }
-                                        ) {
-                                            Text("Retry")
-                                        }
-                                    }
-                                }
-                            }
-                            Result.Idle -> {
-                                // Initial state
+            when (val state = productsState) {
+                is Result.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+
+                is Result.Success -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(state.data) { product ->
+                            ProductCard(
+                                product = product, onClick = {
+//                                    navController.navigate(Routes.ProductDetailScreen(product.id))
+                                })
+                        }
+                    }
+                }
+
+                is Result.Failure -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "Error: ${state.message}", color = Color.Red
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            TextButton(
+                                onClick = { productViewModel.retryLoading() }) {
+                                Text("Retry")
                             }
                         }
-            */
+                    }
+                }
+
+                Result.Idle -> {
+                    // Initial state
+                }
+            }
         }
     }
 }
 
-/*
 @Composable
+
 fun ProductCard(
-//    product: Product,
+    product: Product,
     onClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -276,9 +287,7 @@ fun ProductCard(
     fun shareProduct(product: Product) {
         val shareText =
             "Check out this amazing product: ${product.title}\n\n" + "${product.description}\n\n" + "Price: ₹${
-                String.format(
-                    "%.0f", product.price * 83
-                )
+                String.format("%.0f", product.price * 83)
             }\n" + "Rating: ${
                 String.format(
                     "%.1f", product.rating
@@ -421,7 +430,7 @@ fun ProductCard(
             }
         }
     }
-}*/
+}
 
 
 @Composable

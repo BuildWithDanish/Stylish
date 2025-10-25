@@ -1,7 +1,10 @@
 package com.danish.stylish.di
 
+import com.danish.stylish.data.remote.ProductApiService
 import com.danish.stylish.data.repositoryImpl.AuthRepositoryImpl
+import com.danish.stylish.data.repositoryImpl.ProductRepositoryImpl
 import com.danish.stylish.domain.repository.AuthRepository
+import com.danish.stylish.domain.repository.ProductRepository
 import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -45,6 +48,12 @@ object DataModule {
     @Singleton
     fun provideAuthRepository(firebaseAuth: FirebaseAuth): AuthRepository {
         return AuthRepositoryImpl(firebaseAuth)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProductRepository(apiService: ProductApiService): ProductRepository {
+        return ProductRepositoryImpl(apiService)
     }
 }
 
