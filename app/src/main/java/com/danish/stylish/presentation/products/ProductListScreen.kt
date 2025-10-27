@@ -71,6 +71,7 @@ import coil3.request.crossfade
 import com.danish.stylish.R
 import com.danish.stylish.domain.model.Product
 import com.danish.stylish.domain.utils.Result
+import com.danish.stylish.navigation.Routes
 import com.danish.stylish.presentation.component.BottomNavItem
 import com.danish.stylish.presentation.component.BottomNavigationBar
 
@@ -105,7 +106,8 @@ fun ProductListScreen(
                         Image(
                             painter = painterResource(id = R.drawable.ic_menu),
                             contentDescription = "Menu",
-                            modifier = Modifier.size(24.dp)
+                            modifier = Modifier.size(28.dp)
+                                .background(Color.White)
                         )
                     }
                 }, actions = {
@@ -259,7 +261,7 @@ fun ProductListScreen(
                         items(state.data) { product ->
                             ProductCard(
                                 product = product, onClick = {
-//                                    navController.navigate(Routes.ProductDetailScreen(product.id))
+                                    navController.navigate(Routes.ProductDetailScreen(product.id))
                                 })
                         }
                     }
@@ -391,37 +393,40 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             // Price and Rating Row
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalArrangement = Arrangement.Center
             ) {
-                Column {
-                    // Discounted Price
-                    Text(
-                        text = "₹${
-                            String.format(
-                                "%.0f", product.price * 83
-                            )
-                        }", // Convert to INR approximately
-                        fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black
-                    )
-
-                    // Original Price (if there's a discount)
-                    if (product.discountPercentage > 0) {
-                        val originalPrice = product.price / (1 - product.discountPercentage / 100)
-                        Text(
-                            text = "₹${String.format("%.0f", originalPrice * 83)}",
-                            fontSize = 12.sp,
-                            color = Color.Gray,
-                            textDecoration = TextDecoration.LineThrough
+                Row {
+                // Discounted Price
+                Text(
+                    text = "₹${
+                        String.format(
+                            "%.0f", product.price * 83
                         )
-                    }
+                    }", // Convert to INR approximately
+                    fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black
+                )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                // Original Price (if there's a discount)
+                if (product.discountPercentage > 0) {
+                    val originalPrice = product.price / (1 - product.discountPercentage / 100)
+                    Text(
+                        text = "₹${String.format("%.0f", originalPrice * 83)}",
+                        fontSize = 12.sp,
+                        color = Color.Gray,
+                        textDecoration = TextDecoration.LineThrough
+                    )
                 }
+            }
+
 
                 // Rating and Share
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Absolute.SpaceBetween
                 ) {
                     StarRating(
                         rating = product.rating, starSize = 14.dp

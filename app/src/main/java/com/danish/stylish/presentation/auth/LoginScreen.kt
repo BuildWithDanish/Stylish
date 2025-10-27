@@ -91,6 +91,7 @@ fun LoginScreen(
     Scaffold(modifier = Modifier.background(color = Color.White)) {
         Column(
             modifier = Modifier
+                .background(Color.White)
                 .padding(it)
                 .padding(16.dp)
                 .padding(top = 16.dp)
