@@ -106,7 +106,8 @@ fun ProductListScreen(
                         Image(
                             painter = painterResource(id = R.drawable.ic_menu),
                             contentDescription = "Menu",
-                            modifier = Modifier.size(28.dp)
+                            modifier = Modifier
+                                .size(28.dp)
                                 .background(Color.White)
                         )
                     }
@@ -151,7 +152,11 @@ fun ProductListScreen(
             // Search Bar
             OutlinedTextField(
                 value = searchQuery,
-                onValueChange = { searchQuery = it },
+                onValueChange = {
+                    searchQuery = it
+                    // Trigger search on every text change
+                    productViewModel.searchProduct(it)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(68.dp)
@@ -398,29 +403,29 @@ fun ProductCard(
                 verticalArrangement = Arrangement.Center
             ) {
                 Row {
-                // Discounted Price
-                Text(
-                    text = "₹${
-                        String.format(
-                            "%.0f", product.price * 83
-                        )
-                    }", // Convert to INR approximately
-                    fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black
-                )
+                    // Discounted Price
+                    Text(
+                        text = "₹${
+                            String.format(
+                                "%.0f", product.price * 83
+                            )
+                        }", // Convert to INR approximately
+                        fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.Black
+                    )
 
                     Spacer(modifier = Modifier.width(4.dp))
 
-                // Original Price (if there's a discount)
-                if (product.discountPercentage > 0) {
-                    val originalPrice = product.price / (1 - product.discountPercentage / 100)
-                    Text(
-                        text = "₹${String.format("%.0f", originalPrice * 83)}",
-                        fontSize = 12.sp,
-                        color = Color.Gray,
-                        textDecoration = TextDecoration.LineThrough
-                    )
+                    // Original Price (if there's a discount)
+                    if (product.discountPercentage > 0) {
+                        val originalPrice = product.price / (1 - product.discountPercentage / 100)
+                        Text(
+                            text = "₹${String.format("%.0f", originalPrice * 83)}",
+                            fontSize = 12.sp,
+                            color = Color.Gray,
+                            textDecoration = TextDecoration.LineThrough
+                        )
+                    }
                 }
-            }
 
 
                 // Rating and Share

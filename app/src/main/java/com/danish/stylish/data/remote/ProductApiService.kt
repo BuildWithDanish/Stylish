@@ -7,11 +7,17 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import javax.inject.Inject
 
-class ProductApiService @Inject constructor(private val client: HttpClient){
+class ProductApiService @Inject constructor(private val client: HttpClient) {
 
-    suspend fun getProduct(limit: Int = 0): ProductResponse{
-        return client.get("product"){
+    suspend fun getProduct(limit: Int = 0): ProductResponse {
+        return client.get("product") {
             parameter("limit", limit)
+        }.body()
+    }
+
+    suspend fun searchProducts(query: String): ProductResponse {
+        return client.get("product/search") {
+            parameter("q", query)
         }.body()
     }
 }
