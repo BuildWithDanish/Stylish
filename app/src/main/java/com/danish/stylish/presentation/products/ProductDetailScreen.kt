@@ -1,5 +1,6 @@
 package com.danish.stylish.presentation.products
 
+import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,10 +35,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,24 +54,52 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.danish.stylish.domain.model.Product
 import com.danish.stylish.domain.utils.Result
+import com.danish.stylish.presentation.wishlist.WishListViewModel
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
     productId: Int = 1,
     productViewModel: ProductViewModel = hiltViewModel(),
-    navController: NavHostController
+    navController: NavController,
+    wishListViewmodel: WishListViewModel = hiltViewModel(),
 ) {
 
     val productState by productViewModel.productState.collectAsState()
     var isFavourite by remember { mutableStateOf(false) }
     var selectedImageIndex by remember { mutableStateOf(0) }
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    //check if product is in wishlist
+    LaunchedEffect(productId) {
+        isFavourite = wishListViewmodel.isInWishlist(productId)
+    }
+
+    // Share function
+    fun shareProduct(product: Product) {
+        val shareText = "Check out this amazing product: ${product.title}\n\n" +
+                "${product.description}\n\n" +
+                "Price: ₹${String.format("%.0f", product.price * 83)}\n" +
+                "Rating: ${String.format("%.1f", product.rating)} stars\n\n" +
+                "Get it now on EcoMart!"
+
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, shareText)
+            putExtra(Intent.EXTRA_SUBJECT, "Check out ${product.title}")
+        }
+
+        val chooserIntent = Intent.createChooser(shareIntent, "Share Product")
+        context.startActivity(chooserIntent)
+    }
 
     //find Product by ID
     val product = when (val state = productState) {
@@ -80,20 +111,33 @@ fun ProductDetailScreen(
         TopAppBar(
             title = { Text(text = "Product Details") },
             navigationIcon = {
-                IconButton(onClick = {}) {
+                IconButton(onClick = {navController.popBackStack()}) {
                     Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                 }
             },
             actions = {
                 //share
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    product?.let { shareProduct(it) }
+                }) {
                     Icon(
                         Icons.Default.Share,
                         contentDescription = "Share"
                     )
                 }
                 //Favourite
-                IconButton(onClick = {}) {
+                IconButton(onClick = {
+                    product?.let { product ->
+                        coroutineScope.launch {
+                            if (isFavourite) {
+                                wishListViewmodel.removeFromWishlist(product.id)
+                            } else {
+                                wishListViewmodel.addToWishlist(product)
+                                isFavourite = true
+                            }
+                        }
+                    }
+                }) {
                     Icon(
                         if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Favourite",
@@ -109,7 +153,9 @@ fun ProductDetailScreen(
         when {
             productState is Result.Loading -> {
                 Box(
-                    modifier = Modifier.fillMaxSize().background(Color.White),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator()
@@ -179,7 +225,8 @@ fun ProductImageGallery(
                     .crossfade(true)
                     .build(),
                 contentDescription = product.title,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .background(Color.White),
                 contentScale = ContentScale.Fit,
                 loading = {
