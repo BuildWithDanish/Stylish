@@ -7,11 +7,14 @@ import com.danish.stylish.data.local.database.StylishDataBase
 import com.danish.stylish.data.remote.ProductApiService
 import com.danish.stylish.data.repositoryImpl.AuthRepositoryImpl
 import com.danish.stylish.data.repositoryImpl.ProductRepositoryImpl
+import com.danish.stylish.data.repositoryImpl.UserSettingRepositioryImp
 import com.danish.stylish.data.repositoryImpl.WishListRepoImp
 import com.danish.stylish.domain.repository.AuthRepository
 import com.danish.stylish.domain.repository.ProductRepository
+import com.danish.stylish.domain.repository.UserSettingsRepository
 import com.danish.stylish.domain.repository.WishListRepo
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -86,6 +89,18 @@ object DataModule {
     @Singleton
     fun provideWishListReop(wishListDao: WishListDao): WishListRepo {
         return WishListRepoImp(wishListDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseDataBase(): FirebaseDatabase{
+        return FirebaseDatabase.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingRepository(database: FirebaseDatabase): UserSettingsRepository{
+        return UserSettingRepositioryImp(database)
     }
 }
 

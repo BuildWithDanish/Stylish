@@ -12,6 +12,7 @@ import com.danish.stylish.presentation.onboardingscreen.GetStartedScreen
 import com.danish.stylish.presentation.onboardingscreen.SplashScreen
 import com.danish.stylish.presentation.products.ProductDetailScreen
 import com.danish.stylish.presentation.products.ProductListScreen
+import com.danish.stylish.presentation.setting.SettingScreen
 import com.danish.stylish.presentation.wishlist.WishListScreen
 
 @Composable
@@ -36,5 +37,6 @@ fun StylishNavigation() {
             )
         }
         composable<Routes.WishListScreen> { WishListScreen(navController) }
+        composable <Routes.SettingScreen>{ SettingScreen(navController) }
     }
 }

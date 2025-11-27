@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
     kotlin("plugin.serialization") version "2.0.0"
-    alias(libs.plugins.google.gms.google.services) apply false
+    alias(libs.plugins.google.gms.google.services) apply false//Auth FireBase
 
     //Hilt
     id("com.google.dagger.hilt.android") version "2.57.1" apply false
