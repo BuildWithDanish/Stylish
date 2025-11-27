@@ -91,7 +91,7 @@ fun GetStartedScreen(navController: NavHostController) {
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(R.color.vivid)
                 ),
-                shape = RoundedCornerShape(8.dp)
+                shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
                     text = "Get Started",
