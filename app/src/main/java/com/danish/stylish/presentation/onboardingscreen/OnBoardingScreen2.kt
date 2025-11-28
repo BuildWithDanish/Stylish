@@ -94,42 +94,6 @@ fun OnBoardingScreen2(navController: NavController) {
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            TextButton(
-                onClick = { navController.navigate(Routes.OnBoardingScreen1) }
-            ) {
-                Text(
-                    text = "Prev",
-                    fontSize = 18.sp,
-                    color = Color.Gray,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-               PageIndicator(false)
-               PageIndicator(true)
-               PageIndicator(false)
-            }
-
-            TextButton(
-                onClick = { navController.navigate(Routes.OnBoardingScreen3) }
-            ) {
-                Text(
-                    text = "Next",
-                    fontSize = 18.sp,
-                    color = Color.Red,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
     }
 
 }

@@ -9,6 +9,8 @@ import com.danish.stylish.presentation.auth.ForegtScreen
 import com.danish.stylish.presentation.auth.LoginScreen
 import com.danish.stylish.presentation.auth.SignUpScreen
 import com.danish.stylish.presentation.onboardingscreen.GetStartedScreen
+import com.danish.stylish.presentation.onboardingscreen.OnBoardingScreen2
+import com.danish.stylish.presentation.onboardingscreen.OnBoardingScreen3
 import com.danish.stylish.presentation.onboardingscreen.SplashScreen
 import com.danish.stylish.presentation.products.ProductDetailScreen
 import com.danish.stylish.presentation.products.ProductListScreen
@@ -20,9 +22,11 @@ fun StylishNavigation() {
 
     val navController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routes.GetStartedScreen) {
+    NavHost(navController = navController, startDestination = Routes.SplashScreen) {
 
         composable<Routes.OnBoardingScreen1> { SwipOnBoarding(navController) }
+        composable<Routes.OnBoardingScreen2> { OnBoardingScreen2(navController) }
+        composable<Routes.OnBoardingScreen3> { OnBoardingScreen3(navController) }
         composable<Routes.LoginScreen> { LoginScreen(navController) }
         composable<Routes.SignUpScreen> { SignUpScreen(navController) }
         composable<Routes.ForgetScreen> { ForegtScreen(navController) }

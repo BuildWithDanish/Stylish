@@ -92,34 +92,6 @@ fun OnboardingScreen1(navController: NavController) {
         Spacer(modifier = Modifier.weight(1f))
 
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-
-         Spacer(modifier = Modifier.weight(1f))
-
-            Row (horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.Bottom){
-                PageIndicator(true)
-                PageIndicator(false)
-                PageIndicator(false)}
-
-            Spacer(modifier = Modifier.weight(0.6f))
-
-            TextButton(
-                onClick = { navController.navigate(Routes.OnBoardingScreen2) }
-            ) {
-                Text(
-                    text = "Next",
-                    fontSize = 18.sp,
-                    color = Color.Red,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        }
-
     }
 }
 
