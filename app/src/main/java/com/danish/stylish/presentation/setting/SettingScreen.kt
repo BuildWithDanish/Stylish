@@ -123,7 +123,7 @@ fun SettingScreen(navController: NavController, viewModel: SettingsViewModel = h
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /*navController.navigateUp()*/ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"

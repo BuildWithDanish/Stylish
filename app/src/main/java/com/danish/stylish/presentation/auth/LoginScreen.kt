@@ -1,5 +1,8 @@
 package com.danish.stylish.presentation.auth
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -42,17 +46,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.danish.stylish.R
 import com.danish.stylish.domain.utils.Result
 import com.danish.stylish.navigation.Routes
+import com.danish.stylish.utils.GoogleSignInHelper
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
 
 
 @Composable
 fun LoginScreen(
     navController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
 ) {
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -65,13 +71,67 @@ fun LoginScreen(
 
     val authState by authViewModel.authState.collectAsState()
 
+    val context = LocalContext.current
+    // Google Sign-In launcher
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        android.util.Log.d("LoginScreen", "Google Sign-In result code: ${result.resultCode}")
+        when (result.resultCode) {
+            Activity.RESULT_OK -> {
+                android.util.Log.d("LoginScreen", "RESULT_OK received")
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    android.util.Log.d(
+                        "LoginScreen",
+                        "Account: ${account?.email}, ID Token: ${account?.idToken != null}"
+                    )
+                    if (account != null) {
+                        if (account.idToken != null) {
+                            authViewModel.signInWithGoogle(account)
+                        } else {
+                            showError = true
+                            errorMessage =
+                                "Google sign-in failed: No ID token received. Please check Firebase configuration."
+                            android.util.Log.e("LoginScreen", "No ID token in account")
+                        }
+                    } else {
+                        showError = true
+                        errorMessage = "Google sign-in failed: Account is null"
+                        android.util.Log.e("LoginScreen", "Account is null")
+                    }
+                } catch (e: ApiException) {
+                    showError = true
+                    errorMessage = "Google sign-in failed: Code ${e.statusCode} - ${e.message}"
+                    android.util.Log.e(
+                        "LoginScreen",
+                        "ApiException: ${e.statusCode} - ${e.message}",
+                        e
+                    )
+                }
+            }
+
+            Activity.RESULT_CANCELED -> {
+                // Don't show error for user cancellation
+                android.util.Log.d("LoginScreen", "User canceled Google sign-in")
+            }
+
+            else -> {
+                showError = true
+                errorMessage = "Google sign-in failed with result code: ${result.resultCode}"
+                android.util.Log.e("LoginScreen", "Unknown result code: ${result.resultCode}")
+            }
+        }
+    }
+
     // Handle authentication state
     LaunchedEffect(authState) {
         when (val currentState = authState) {
             is Result.Success -> {
 //                Navigate to main screen or dashboard on successful login
                 navController.navigate(Routes.ProductListScreen) {
-                popUpTo(Routes.LoginScreen) { inclusive = true }
+                    popUpTo(Routes.LoginScreen) { inclusive = true }
                 }
             }
 
@@ -243,7 +303,14 @@ fun LoginScreen(
                     Image(
                         painter = painterResource(R.drawable.ic_google),
                         contentDescription = null,
-                        Modifier.size(64.dp)
+                        Modifier
+                            .size(64.dp)
+                            .clickable {
+                                val googleSignInClient =
+                                    GoogleSignInHelper.getGoogleSignInClient(context)
+                                val signInIntent = googleSignInClient.signInIntent
+                                googleSignInLauncher.launch(signInIntent)
+                            }
                     )
                     Image(
                         painter = painterResource(R.drawable.ic_apple),
