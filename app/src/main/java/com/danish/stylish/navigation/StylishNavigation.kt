@@ -1,10 +1,14 @@
 package com.danish.stylish.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.danish.stylish.presentation.SharedPreference.SharedPreferenceViewModel
 import com.danish.stylish.presentation.auth.ForegtScreen
 import com.danish.stylish.presentation.auth.LoginScreen
 import com.danish.stylish.presentation.auth.SignUpScreen
@@ -22,6 +26,12 @@ fun StylishNavigation() {
 
     val navController = rememberNavController()
 
+    // Inject ViewModels using Hilt
+    val sharedPreferenceViewModel: SharedPreferenceViewModel = viewModel()
+
+    // Observe user preferences state
+    val sharedPreferenceState by sharedPreferenceViewModel.sharedPreferenceState.collectAsState()
+
     NavHost(navController = navController, startDestination = Routes.SplashScreen) {
 
         composable<Routes.OnBoardingScreen1> { SwipOnBoarding(navController) }
@@ -31,7 +41,18 @@ fun StylishNavigation() {
         composable<Routes.SignUpScreen> { SignUpScreen(navController) }
         composable<Routes.ForgetScreen> { ForegtScreen(navController) }
         composable<Routes.GetStartedScreen> { GetStartedScreen(navController) }
-        composable<Routes.SplashScreen> { SplashScreen(navController) }
+        composable<Routes.SplashScreen> {
+            SplashScreen(onFinish = {
+                val destination = when {
+                    sharedPreferenceState.isFirstTimeLogin -> Routes.GetStartedScreen
+                    sharedPreferenceState.isLoggedIn -> Routes.ProductListScreen
+                    else -> Routes.LoginScreen
+                }
+                navController.navigate(destination) {
+                    popUpTo(Routes.SplashScreen) { inclusive = true }
+                }
+            })
+        }
         composable<Routes.ProductListScreen> { ProductListScreen(navController) }
         composable<Routes.ProductDetailScreen> { backstackEntry ->
             val args = backstackEntry.toRoute<Routes.ProductDetailScreen>() //it convert to object
@@ -41,6 +62,6 @@ fun StylishNavigation() {
             )
         }
         composable<Routes.WishListScreen> { WishListScreen(navController) }
-        composable <Routes.SettingScreen>{ SettingScreen(navController) }
+        composable<Routes.SettingScreen> { SettingScreen(navController) }
     }
 }

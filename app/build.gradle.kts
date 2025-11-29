@@ -97,5 +97,9 @@ dependencies {
 
     //google auth
     implementation(libs.play.services.auth)
+
+    //shared preference
+    implementation("androidx.datastore:datastore-preferences:1.2.0")
+    implementation("androidx.datastore:datastore-preferences-core:1.2.0")
 }
 

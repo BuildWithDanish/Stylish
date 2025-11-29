@@ -3,6 +3,7 @@ package com.danish.stylish.presentation.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.danish.stylish.domain.usecase.LoginUseCase
+import com.danish.stylish.domain.usecase.SetSharedPreferenceUseCase
 import com.danish.stylish.domain.usecase.SignUpUseCase
 import com.danish.stylish.domain.utils.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val signUseCase: SignUpUseCase
+    private val signUseCase: SignUpUseCase,
+    private val sharedPreferenceUseCase: SetSharedPreferenceUseCase
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow<Result<String>>(Result.Idle)
@@ -25,6 +27,10 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _authState.value = loginUseCase(email, password)
+                if(authState.value is Result.Success){
+                    sharedPreferenceUseCase.setLoggedIn(true)
+                    sharedPreferenceUseCase.setFirstTimeLogin(false)
+                }
             } catch (e: Exception) {
                 _authState.value = Result.Failure(e.localizedMessage ?: "Login Failed")
             }
@@ -36,6 +42,11 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 _authState.value = signUseCase(email, password)
+                if(authState.value is Result.Success){
+                    // 👉 Decide: auto login after signup?
+                    sharedPreferenceUseCase.setLoggedIn(true)
+                    sharedPreferenceUseCase.setFirstTimeLogin(false)
+                }
             } catch (e: Exception) {
                 _authState.value = Result.Failure(e.localizedMessage ?: "SignUp Failed")
             }

@@ -26,7 +26,9 @@ import com.danish.stylish.navigation.Routes
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(
+    onFinish: () -> Unit
+) {
 
     var startAnimation by remember { mutableStateOf(false) }
     val anime = animateFloatAsState(
@@ -37,7 +39,7 @@ fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(Unit) {
         startAnimation = true
         delay(3000)
-        navController.navigate(Routes.GetStartedScreen)
+        onFinish()
     }
     Column(
         Modifier
@@ -56,5 +58,5 @@ fun SplashScreen(navController: NavHostController) {
 @Composable
 @Preview(showSystemUi = true)
 fun SplashScreenPreview() {
-    SplashScreen(navController = rememberNavController())
+//    SplashScreen(navController = rememberNavController())
 }
