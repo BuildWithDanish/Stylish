@@ -1,4 +1,4 @@
-package com.danish.stylish.data.local
+package com.danish.stylish.data.local.dataStore
 
 import android.content.Context
 import androidx.datastore.core.DataStore

@@ -1,6 +1,6 @@
 package com.danish.stylish.data.repositoryImpl
 
-import com.danish.stylish.data.local.SharedPreferenceDataStore
+import com.danish.stylish.data.local.dataStore.SharedPreferenceDataStore
 import com.danish.stylish.domain.repository.SharedPreferenceRepository
 import kotlinx.coroutines.flow.Flow
 

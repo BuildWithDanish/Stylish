@@ -2,8 +2,9 @@ package com.danish.stylish.di
 
 import android.content.Context
 import androidx.room.Room
-import com.danish.stylish.data.local.SharedPreferenceDataStore
 import com.danish.stylish.data.local.dao.WishListDao
+import com.danish.stylish.data.local.dataStore.RecentSearchDataStore
+import com.danish.stylish.data.local.dataStore.SharedPreferenceDataStore
 import com.danish.stylish.data.local.database.StylishDataBase
 import com.danish.stylish.data.remote.ProductApiService
 import com.danish.stylish.data.repositoryImpl.AuthRepositoryImpl
@@ -96,26 +97,32 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseDataBase(): FirebaseDatabase{
+    fun provideFirebaseDataBase(): FirebaseDatabase {
         return FirebaseDatabase.getInstance()
     }
 
     @Provides
     @Singleton
-    fun provideSettingRepository(database: FirebaseDatabase): UserSettingsRepository{
+    fun provideSettingRepository(database: FirebaseDatabase): UserSettingsRepository {
         return UserSettingRepositioryImp(database)
     }
 
     @Provides
     @Singleton
-    fun provideSharedPreferenceRepository(sharedPreferenceDataStore: SharedPreferenceDataStore): SharedPreferenceRepository{
+    fun provideSharedPreferenceRepository(sharedPreferenceDataStore: SharedPreferenceDataStore): SharedPreferenceRepository {
         return SharedPreferenceRepoImp(sharedPreferenceDataStore)
     }
 
     @Provides
     @Singleton
-    fun provideSharedPreferenceDataStore(@ApplicationContext context: Context): SharedPreferenceDataStore{
+    fun provideSharedPreferenceDataStore(@ApplicationContext context: Context): SharedPreferenceDataStore {
         return SharedPreferenceDataStore(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecentSearchDataStore(@ApplicationContext context: Context): RecentSearchDataStore {
+        return RecentSearchDataStore(context)
     }
 }
 

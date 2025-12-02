@@ -65,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import coil3.compose.SubcomposeAsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
@@ -74,6 +75,7 @@ import com.danish.stylish.domain.utils.Result
 import com.danish.stylish.navigation.Routes
 import com.danish.stylish.presentation.component.BottomNavItem
 import com.danish.stylish.presentation.component.BottomNavigationBar
+import com.danish.stylish.presentation.setting.SettingsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,8 +83,10 @@ import com.danish.stylish.presentation.component.BottomNavigationBar
 fun ProductListScreen(
     navController: NavHostController,
     productViewModel: ProductViewModel = hiltViewModel(),
+    settingViewModel: SettingsViewModel = hiltViewModel()
 ) {
 
+    val settingState by settingViewModel.state.collectAsState()
     val productsState by productViewModel.productState.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
@@ -113,16 +117,32 @@ fun ProductListScreen(
                     }
                 }, actions = {
                     // Right profile avatar
-                    IconButton(onClick = { /* Handle profile */ }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.profile_avatar),
-                            contentDescription = "Profile",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape)
-                                .border(2.dp, Color(0xFFE0E0E0), CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
+                    IconButton(onClick = { navController.navigate(Routes.SettingScreen) }) {
+                        val profileUrl = settingState.profilePhotoUrl
+
+                        if (!profileUrl.isNullOrEmpty()) {
+                            // Google/Firebase profile photo
+                            AsyncImage(
+                                model = profileUrl,
+                                contentDescription = "Profile",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .border(2.dp, Color(0xFFE0E0E0), CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        } else {
+                            // Fallback avatar
+                            Image(
+                                painter = painterResource(id = R.drawable.profile_avatar),
+                                contentDescription = "Profile",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                                    .border(2.dp, Color(0xFFE0E0E0), CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
                     }
                 }, colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = Color.White
@@ -139,8 +159,12 @@ fun ProductListScreen(
                         }
 
                         is BottomNavItem.Cart -> {}
-                        is BottomNavItem.Home -> {}
-                        is BottomNavItem.Search -> {}
+                        is BottomNavItem.Home -> {
+                            //already at home
+                        }
+                        is BottomNavItem.Search -> {
+                            navController.navigate(Routes.SearchScreen)
+                        }
                         is BottomNavItem.Setting -> {
                             navController.navigate(Routes.SettingScreen)
                         }
@@ -165,7 +189,10 @@ fun ProductListScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(68.dp)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+                    .clickable {
+                        navController.navigate(Routes.SearchScreen)
+                    },
                 placeholder = {
                     Text(
                         text = "Search any Product..", color = Color(0xFFBBBBBB), fontSize = 14.sp
@@ -179,7 +206,7 @@ fun ProductListScreen(
                     )
                 },
                 trailingIcon = {
-                    IconButton(onClick = { /* Handle voice search */ }) {
+                    IconButton(onClick = {  navController.navigate(Routes.SearchScreen) }) {
                         Image(
                             painter = painterResource(id = R.drawable.ic_mic),
                             contentDescription = "Voice Search",
@@ -195,7 +222,8 @@ fun ProductListScreen(
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
-                )
+                ),
+                enabled = false
             )
 
 

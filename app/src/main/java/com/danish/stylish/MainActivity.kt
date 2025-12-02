@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.danish.stylish.navigation.StylishNavigation
 import com.danish.stylish.presentation.auth.SignUpScreen
+import com.danish.stylish.presentation.search.SearchScreen
 import com.danish.stylish.presentation.setting.SettingScreen
 import com.danish.stylish.ui.theme.StylishTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,6 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             StylishTheme {
+
                 StylishNavigation()
             }
         }

@@ -3,6 +3,7 @@ package com.danish.stylish.presentation.products
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.danish.stylish.data.local.dataStore.RecentSearchDataStore
 import com.danish.stylish.domain.model.Product
 import com.danish.stylish.domain.usecase.GetProductUseCase
 import com.danish.stylish.domain.usecase.SearchProductsUseCase
@@ -11,17 +12,45 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.emptyList
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(
     private val getProductUseCase: GetProductUseCase,
     private val searchProductsUseCase: SearchProductsUseCase,
+    private val recentSearchStore: RecentSearchDataStore,
 ) :
     ViewModel() {
+
+    val recentSearches = recentSearchStore.recentSearches.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        emptyList()
+    )
+
+    fun addRecent(query: String) {
+        viewModelScope.launch {
+            recentSearchStore.addSearch(query)
+        }
+    }
+
+    fun removeRecent(query: String) {
+        viewModelScope.launch {
+            recentSearchStore.removeSearch(query)
+        }
+    }
+
+    fun clearAllRecent() {
+        viewModelScope.launch {
+            recentSearchStore.clearAll()
+        }
+    }
 
     private val _productState = MutableStateFlow<Result<List<Product>>>(Result.Idle)
     var productState: StateFlow<Result<List<Product>>> = _productState.asStateFlow()
