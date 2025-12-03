@@ -1,6 +1,7 @@
 package com.danish.stylish.presentation.products
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,6 +60,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.danish.stylish.domain.model.Product
 import com.danish.stylish.domain.utils.Result
+import com.danish.stylish.presentation.cart.CartViewModel
 import com.danish.stylish.presentation.wishlist.WishListViewModel
 import kotlinx.coroutines.launch
 
@@ -69,6 +71,7 @@ fun ProductDetailScreen(
     productViewModel: ProductViewModel = hiltViewModel(),
     navController: NavController,
     wishListViewmodel: WishListViewModel = hiltViewModel(),
+    cartViewModel:  CartViewModel = hiltViewModel()
 ) {
 
     val productState by productViewModel.productState.collectAsState()
@@ -193,7 +196,16 @@ fun ProductDetailScreen(
                     // Add to cart
                     AddToCartSection(
                         product = product,
-                        onAddToCart = {}
+                        onAddToCart =  {
+                            product?.let { prod ->
+                                cartViewModel.addToCart(prod, 1)
+                                Toast.makeText(
+                                    context,
+                                    "${prod.title} added to cart",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     )
                 }
             }

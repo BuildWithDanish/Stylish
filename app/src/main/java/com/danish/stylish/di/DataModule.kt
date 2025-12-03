@@ -3,16 +3,19 @@ package com.danish.stylish.di
 import android.content.Context
 import androidx.room.Room
 import com.danish.stylish.data.local.dao.WishListDao
+import com.danish.stylish.data.local.dataStore.CartDataStore
 import com.danish.stylish.data.local.dataStore.RecentSearchDataStore
 import com.danish.stylish.data.local.dataStore.SharedPreferenceDataStore
 import com.danish.stylish.data.local.database.StylishDataBase
 import com.danish.stylish.data.remote.ProductApiService
 import com.danish.stylish.data.repositoryImpl.AuthRepositoryImpl
+import com.danish.stylish.data.repositoryImpl.CartRepositoryImpl
 import com.danish.stylish.data.repositoryImpl.ProductRepositoryImpl
 import com.danish.stylish.data.repositoryImpl.SharedPreferenceRepoImp
 import com.danish.stylish.data.repositoryImpl.UserSettingRepositioryImp
 import com.danish.stylish.data.repositoryImpl.WishListRepoImp
 import com.danish.stylish.domain.repository.AuthRepository
+import com.danish.stylish.domain.repository.CartRepository
 import com.danish.stylish.domain.repository.ProductRepository
 import com.danish.stylish.domain.repository.SharedPreferenceRepository
 import com.danish.stylish.domain.repository.UserSettingsRepository
@@ -123,6 +126,18 @@ object DataModule {
     @Singleton
     fun provideRecentSearchDataStore(@ApplicationContext context: Context): RecentSearchDataStore {
         return RecentSearchDataStore(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartDataStore(@ApplicationContext context: Context): CartDataStore {
+        return CartDataStore(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartRepository(cartDataStore: CartDataStore): CartRepository {
+        return CartRepositoryImpl(cartDataStore)
     }
 }
 

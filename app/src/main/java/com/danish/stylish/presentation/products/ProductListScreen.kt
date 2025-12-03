@@ -158,7 +158,9 @@ fun ProductListScreen(
                             navController.navigate(Routes.WishListScreen)
                         }
 
-                        is BottomNavItem.Cart -> {}
+                        is BottomNavItem.Cart -> {
+                            navController.navigate(Routes.CartScreen)
+                        }
                         is BottomNavItem.Home -> {
                             //already at home
                         }

@@ -28,6 +28,8 @@ class ProductViewModel @Inject constructor(
 ) :
     ViewModel() {
 
+
+        //convert flow to stateflow
     val recentSearches = recentSearchStore.recentSearches.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),

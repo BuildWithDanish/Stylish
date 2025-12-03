@@ -1,6 +1,7 @@
 package com.danish.stylish.navigation
 
 import kotlinx.serialization.Serializable
+import okhttp3.Route
 
 @Serializable
 sealed class Routes {
@@ -43,4 +44,7 @@ sealed class Routes {
 
     @Serializable
     data object SearchScreen: Routes()
+
+    @Serializable
+    data object CartScreen: Routes()
 }

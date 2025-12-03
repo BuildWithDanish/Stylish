@@ -12,6 +12,7 @@ import com.danish.stylish.presentation.SharedPreference.SharedPreferenceViewMode
 import com.danish.stylish.presentation.auth.ForegtScreen
 import com.danish.stylish.presentation.auth.LoginScreen
 import com.danish.stylish.presentation.auth.SignUpScreen
+import com.danish.stylish.presentation.cart.CartScreen
 import com.danish.stylish.presentation.onboardingscreen.GetStartedScreen
 import com.danish.stylish.presentation.onboardingscreen.OnBoardingScreen2
 import com.danish.stylish.presentation.onboardingscreen.OnBoardingScreen3
@@ -65,5 +66,6 @@ fun StylishNavigation() {
         composable<Routes.WishListScreen> { WishListScreen(navController) }
         composable<Routes.SettingScreen> { SettingScreen(navController) }
         composable <Routes.SearchScreen>{ SearchScreen(navController) }
+        composable <Routes.CartScreen>{ CartScreen(navController) }
     }
 }
